@@ -4,10 +4,10 @@ import Home from './page/Home'
 function App() {
 
   return (
-        <>
-            <Header />
-           <Home /> 
-        </>
+    <>
+      <Header />
+      <Home />
+    </>
   )
 }
 
