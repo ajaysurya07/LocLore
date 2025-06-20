@@ -76,9 +76,9 @@ const Home = () => {
   const [error, setError] = useState("");
   const [nearbyPlaces, setNearbyPlaces] = useState<Place[]>([]);
   const [radius, setRadius] = useState(1000);
- 
- const {globalSearchResults, setGlobalSearchResults , selectedPlace, setSelectedPlace } =  useData();
- 
+
+  const { globalSearchResults, setGlobalSearchResults, selectedPlace, setSelectedPlace } = useData();
+
   const mapRef = useRef<null>(null);
 
 
@@ -118,7 +118,7 @@ const Home = () => {
     );
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     if (selectedPlace) {
       console.log("Selected place:", selectedPlace);
       setPosition(selectedPlace.coordinates);
