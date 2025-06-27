@@ -2,10 +2,10 @@ package main
 
 import (
 	"log"
-	
 
 	"github.com/ajaysurya07/LocLore/server/router/nearby"
 	"github.com/ajaysurya07/LocLore/server/router/search"
+	"github.com/ajaysurya07/LocLore/server/router/reminder"
 
 	"github.com/ajaysurya07/LocLore/server/config"
 
@@ -41,6 +41,7 @@ r.Use(gin.Recovery())
 	{
             nearby.SetFetchNearPlacesRoutes(apiGroup.Group("/fectchNearPlaces"))
 			search.SetupSearchRoutes(apiGroup.Group("/searchOnMap"))
+			reminder.SubmitReminderFormRoutes(apiGroup.Group("/reminderForm"))
 	}
 
 
