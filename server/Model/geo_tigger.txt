@@ -1,0 +1,19 @@
+CREATE TABLE geo_triggers (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,  
+    category VARCHAR(100),     
+    notes TEXT,                 
+    is_active BOOLEAN DEFAULT TRUE,
+    is_triggered BOOLEAN DEFAULT FALSE,
+    trigger_radius FLOAT DEFAULT 100,  -- Radius in meters
+    
+    -- Timestamps
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    triggered_at TIMESTAMPTZ
+);
+
+CREATE INDEX idx_geo_triggers_user ON geo_triggers(user_id);
+CREATE INDEX idx_geo_triggers_active ON geo_triggers(is_active) WHERE is_active = TRUE;
+CREATE INDEX idx_geo_triggers_triggered ON geo_triggers(is_triggered) WHERE is_triggered = FALSE;
+CREATE INDEX idx_geo_triggers_created ON geo_triggers(created_at);
