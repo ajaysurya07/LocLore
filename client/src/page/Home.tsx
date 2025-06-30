@@ -21,6 +21,7 @@ import type { RootState } from "@reduxjs/toolkit/query";
 import { useData } from "../Context/DataContext";
 import axios from "axios";
 import { SetupGeoTrigger } from "../store/GeoTrigger";
+import { SetupFriendsLoc } from "../store/FriendsLoc";
 
 
 // Types for our data structures
@@ -73,6 +74,7 @@ const CenterMap = ({ center }: CenterMapProps) => {
 };
 
 const Home = () => {
+  const [userId , setUserID] =  useState<string>("106122007");
   const [position, setPosition] = useState<Position>([0, 0]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -87,6 +89,13 @@ const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { isLoading, places } = useSelector((state: RootState) => state.nearPlaces)
+   
+  useEffect(()=>{
+      const response = dispatch(SetupFriendsLoc({
+           userID : userId
+      }));
+      console.log("setFriendsLoc : " ,  response);
+  } , [userId])
 
   useEffect(() => {
     if (!navigator.geolocation) {

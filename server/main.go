@@ -9,6 +9,7 @@ import (
 	"github.com/ajaysurya07/LocLore/server/router/search"
 	"github.com/ajaysurya07/LocLore/server/router/reminder"
 		"github.com/ajaysurya07/LocLore/server/router/geoTrigger"
+		"github.com/ajaysurya07/LocLore/server/router/friendsLoc"
 	"github.com/ajaysurya07/LocLore/server/config"
 	
 	"github.com/gin-gonic/gin"
@@ -60,6 +61,7 @@ r.Use(cors.New(cors.Config{
 		search.SetupSearchRoutes(apiGroup.Group("/searchOnMap"))
 		reminder.SubmitReminderFormRoutes(apiGroup.Group("/reminderForm"), db)
 		geoTrigger.SetupGeoTrigger(apiGroup.Group("/getGeoTrigger") , db)
+		friendsLoc.GetFriends(apiGroup.Group("/getFriendsID") , db)
 	}
 
 	if err := r.SetTrustedProxies(nil); err != nil {
