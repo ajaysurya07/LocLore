@@ -19,6 +19,8 @@ import { fetchNearbyPlaces } from "../store/Home";
 import type { AppDispatch } from "../store/store";
 import type { RootState } from "@reduxjs/toolkit/query";
 import { useData } from "../Context/DataContext";
+import axios from "axios";
+import { SetupGeoTrigger } from "../store/GeoTrigger";
 
 
 // Types for our data structures
@@ -117,6 +119,18 @@ const Home = () => {
       }
     );
   }, []);
+
+  useEffect(()=>{
+   const payload : any  = {
+
+        userID : "106122007",
+        lat : position[0] ,
+        lng : position[1],
+        
+   } 
+      const response = dispatch(SetupGeoTrigger(payload));
+      console.log(" SetupGeoTrigger response  : " , response );
+  } , [position])
 
   useEffect(() => {
     if (selectedPlace) {

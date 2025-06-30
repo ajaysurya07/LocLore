@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/ajaysurya07/LocLore/server/router/nearby"
 	"github.com/ajaysurya07/LocLore/server/router/search"
 	"github.com/ajaysurya07/LocLore/server/router/reminder"
+		"github.com/ajaysurya07/LocLore/server/router/geoTrigger"
 	"github.com/ajaysurya07/LocLore/server/config"
 	
 	"github.com/gin-gonic/gin"
@@ -40,14 +42,14 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 
-	// CORS configuration
-	r.Use(cors.New(cors.Config{
-		AllowAllOrigins:  true, 
-		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-	}))
+r.Use(cors.New(cors.Config{
+    AllowOrigins:     []string{"http://localhost:5173"}, 
+    AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+    AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+    ExposeHeaders:    []string{"Content-Length"},
+    AllowCredentials: true,
+    MaxAge:           12 * time.Hour,
+}))
 
 	r.Use(gin.Recovery())
 
@@ -57,6 +59,7 @@ func main() {
 		nearby.SetFetchNearPlacesRoutes(apiGroup.Group("/fectchNearPlaces"))
 		search.SetupSearchRoutes(apiGroup.Group("/searchOnMap"))
 		reminder.SubmitReminderFormRoutes(apiGroup.Group("/reminderForm"), db)
+		geoTrigger.SetupGeoTrigger(apiGroup.Group("/getGeoTrigger") , db)
 	}
 
 	if err := r.SetTrustedProxies(nil); err != nil {
