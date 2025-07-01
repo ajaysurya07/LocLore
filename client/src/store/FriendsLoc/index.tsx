@@ -13,6 +13,7 @@ export const SetupFriendsLoc = createAsyncThunk(
                userID: payload.userID,   
             }
          })
+         console.log("responcsse on SetupFriendsLoc :  " , response.data);
          return response.data;
       } catch (error) {
          return thunkApi.rejectWithValue(error instanceof Error ? error.message : "Unknown error")

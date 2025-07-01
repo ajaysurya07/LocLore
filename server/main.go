@@ -61,7 +61,7 @@ r.Use(cors.New(cors.Config{
 		search.SetupSearchRoutes(apiGroup.Group("/searchOnMap"))
 		reminder.SubmitReminderFormRoutes(apiGroup.Group("/reminderForm"), db)
 		geoTrigger.SetupGeoTrigger(apiGroup.Group("/getGeoTrigger") , db)
-		friendsLoc.GetFriends(apiGroup.Group("/getFriendsID") , db)
+		friendsLoc.SetupFriendsLoc(apiGroup.Group("/getFriendsID") , db)
 	}
 
 	if err := r.SetTrustedProxies(nil); err != nil {

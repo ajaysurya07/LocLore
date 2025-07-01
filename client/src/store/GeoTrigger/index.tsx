@@ -15,6 +15,7 @@ export const SetupGeoTrigger = createAsyncThunk(
                lng: payload.lng
             }
          })
+         console.log("SetupGeoTrigger res : " , response );
          return response.data;
       } catch (error) {
          return thunkApi.rejectWithValue(error instanceof Error ? error.message : "Unknown error")

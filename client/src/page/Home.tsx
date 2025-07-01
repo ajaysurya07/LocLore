@@ -14,6 +14,8 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { Icon, divIcon, point, LatLngExpression } from "leaflet";
 
 import iconUrl from "../icons/placeholder.png";
+import frriendsIcon from "../icons/friendsLoc.png"
+
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNearbyPlaces } from "../store/Home";
 import type { AppDispatch } from "../store/store";
@@ -22,6 +24,8 @@ import { useData } from "../Context/DataContext";
 import axios from "axios";
 import { SetupGeoTrigger } from "../store/GeoTrigger";
 import { SetupFriendsLoc } from "../store/FriendsLoc";
+import connectFireBase from "../firebase/connectFireBase";
+import getFriendsLocations from "../firebase/ getFriendsLocations";
 
 
 // Types for our data structures
@@ -46,8 +50,18 @@ interface Cluster {
   getChildCount: () => number;
 }
 
+interface FriendLocation {
+    id : string;
+    position : number[];
+}
+
 
 const customIcon = new Icon({
+  iconUrl,
+  iconSize: [38, 38],
+});
+
+const customFriendIcon = new Icon({
   iconUrl,
   iconSize: [38, 38],
 });
@@ -74,12 +88,15 @@ const CenterMap = ({ center }: CenterMapProps) => {
 };
 
 const Home = () => {
-  const [userId , setUserID] =  useState<string>("106122007");
+  const [userId, setUserID] = useState<string>("106122007");
   const [position, setPosition] = useState<Position>([0, 0]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [nearbyPlaces, setNearbyPlaces] = useState<Place[]>([]);
   const [radius, setRadius] = useState(1000);
+
+  const [friendsIDs, setFriendsIDs] = useState<string[]>([]);
+  const [friendLocation, setFriendLocation] = useState<FriendLocation[]>([]);
 
   const { globalSearchResults, setGlobalSearchResults, selectedPlace, setSelectedPlace } = useData();
 
@@ -89,13 +106,29 @@ const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { isLoading, places } = useSelector((state: RootState) => state.nearPlaces)
-   
-  useEffect(()=>{
-      const response = dispatch(SetupFriendsLoc({
-           userID : userId
-      }));
-      console.log("setFriendsLoc : " ,  response);
-  } , [userId])
+
+  useEffect(() => {
+    dispatch(SetupFriendsLoc({
+      userID: userId
+    })).then(data => {
+      setFriendsIDs(data.payload.friendsID);
+      // console.log("setFriendsLoc : ", data.payload.friendsID);
+    }).catch(err => { console.error("error on dis SetupFriendsLoc : ", error); })
+
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchFriendsLocations = async () => {
+      if (!friendsIDs || friendsIDs.length === 0) return;
+
+      console.log("friends ID:", friendsIDs);
+      const res = await getFriendsLocations(friendsIDs);
+      setFriendLocation(res);
+      console.log("res for getFriendsLocations:", res);
+    };
+
+    fetchFriendsLocations();
+  }, [friendsIDs]);
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -113,8 +146,9 @@ const Home = () => {
           center: userPos, radiusInMeters: radius
         }
         dispatch(fetchNearbyPlaces(payload))
+        connectFireBase(userId, pos.coords.latitude, pos.coords.longitude);
         setLoading(false);
-        console.log("pos : ", position);
+        // console.log("pos : ", position);
       },
       (err) => {
         setError(err.message);
@@ -129,17 +163,17 @@ const Home = () => {
     );
   }, []);
 
-  useEffect(()=>{
-   const payload : any  = {
+  useEffect(() => {
+    const payload: any = {
 
-        userID : "106122007",
-        lat : position[0] ,
-        lng : position[1],
-        
-   } 
-      const response = dispatch(SetupGeoTrigger(payload));
-      console.log(" SetupGeoTrigger response  : " , response );
-  } , [position])
+      userID: userId,
+      lat: position[0],
+      lng: position[1],
+
+    }
+    const response = dispatch(SetupGeoTrigger(payload));
+    console.log(" SetupGeoTrigger response  : ", response);
+  }, [position])
 
   useEffect(() => {
     if (selectedPlace) {
@@ -155,6 +189,7 @@ const Home = () => {
   useEffect(() => {
     if (places.length !== 0)
       setNearbyPlaces(places);
+    console.log("near places : " ,  places);
   }, [places])
 
   if (loading || isLoading) {
@@ -230,6 +265,27 @@ const Home = () => {
             </Marker>
           ))}
         </MarkerClusterGroup>
+
+       <MarkerClusterGroup
+          chunkedLoading
+          iconCreateFunction={createClusterCustomIcon}
+        >
+          {friendLocation.map((place) => (
+
+            <Marker
+              key={`${place.id}`}
+              position={place.position}
+              icon={customFriendIcon}
+            >
+              <Popup>
+                <div>
+                  <h3>{place.id}</h3>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
+
       </MapContainer>
     </>
   );

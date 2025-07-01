@@ -1,0 +1,6 @@
+CREATE TABLE friends (
+    user_id INTEGER PRIMARY KEY,
+    friend_ids UUID[] NOT NULL DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
