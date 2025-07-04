@@ -4,13 +4,18 @@ import (
 	"context"
 	"log"
 	"time"
+		// "net/http"
+	// "strings"
 
 	"github.com/ajaysurya07/LocLore/server/router/nearby"
 	"github.com/ajaysurya07/LocLore/server/router/search"
 	"github.com/ajaysurya07/LocLore/server/router/reminder"
 		"github.com/ajaysurya07/LocLore/server/router/geoTrigger"
 		"github.com/ajaysurya07/LocLore/server/router/friendsLoc"
+			"github.com/ajaysurya07/LocLore/server/router/auth"
 	"github.com/ajaysurya07/LocLore/server/config"
+
+	// "github.com/ajaysurya07/LocLore/server/middleware"
 	
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
@@ -43,17 +48,17 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 
+
+r.Use(gin.Logger()) 
+r.Use(gin.Recovery())
 r.Use(cors.New(cors.Config{
-    AllowOrigins:     []string{"http://localhost:5173"}, 
+    AllowOrigins:     []string{"http://localhost:5173"},
     AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
     AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
-    ExposeHeaders:    []string{"Content-Length"},
-    AllowCredentials: true,
+    ExposeHeaders:    []string{"Content-Length", "Authorization"},
+    AllowCredentials: true, 
     MaxAge:           12 * time.Hour,
 }))
-
-	r.Use(gin.Recovery())
-
 	// API routes with db injection
 	apiGroup := r.Group("/")
 	{
@@ -61,7 +66,9 @@ r.Use(cors.New(cors.Config{
 		search.SetupSearchRoutes(apiGroup.Group("/searchOnMap"))
 		reminder.SubmitReminderFormRoutes(apiGroup.Group("/reminderForm"), db)
 		geoTrigger.SetupGeoTrigger(apiGroup.Group("/getGeoTrigger") , db)
-		friendsLoc.SetupFriendsLoc(apiGroup.Group("/getFriendsID") , db)
+		friendsLoc.SetupFriendsLoc(apiGroup.Group("/getFriends") , db)
+		auth.SetAuthRoutes(apiGroup.Group("/auth") , db)
+		        		
 	}
 
 	if err := r.SetTrustedProxies(nil); err != nil {

@@ -13,7 +13,7 @@ export const SetupGeoTrigger = createAsyncThunk(
                userID: payload.userID,
                lat: payload.lat,
                lng: payload.lng
-            }
+            },  withCredentials: true,
          })
          console.log("SetupGeoTrigger res : " , response );
          return response.data;

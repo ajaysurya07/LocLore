@@ -6,14 +6,17 @@ import axios from "axios";
 
 export const SetupFriendsLoc = createAsyncThunk(
    '/SetupGeoTrigger',
-   async (payload: { userID: string}, thunkApi) => {
+   async (payload: { userID: string }, thunkApi) => {
       try {
-         const response = await axios.get('http://localhost:5000/getFriendsID/', {
+         console.log(" SetupFriendsLoc payload :: ", payload)
+         const response = await axios.get("http://localhost:5000/getFriends/Id", {
             params: {
-               userID: payload.userID,   
-            }
-         })
-         console.log("responcsse on SetupFriendsLoc :  " , response.data);
+               // userID: "106122007" ,
+                userID: payload.userID,
+            },
+            withCredentials: true,
+         });
+         console.log("responcsse on SetupFriendsLoc :  ", response.data);
          return response.data;
       } catch (error) {
          return thunkApi.rejectWithValue(error instanceof Error ? error.message : "Unknown error")

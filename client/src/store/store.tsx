@@ -1,8 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import fetchNearPlacesReducer from "./Home"; 
+import AuthReducer from "./Auth";
+
+
 export const store = configureStore({
   reducer: {
     nearPlaces: fetchNearPlacesReducer, 
+    auth : AuthReducer
   },
 });
 

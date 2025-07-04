@@ -25,7 +25,7 @@ import axios from "axios";
 import { SetupGeoTrigger } from "../store/GeoTrigger";
 import { SetupFriendsLoc } from "../store/FriendsLoc";
 import connectFireBase from "../firebase/connectFireBase";
-import getFriendsLocations from "../firebase/ getFriendsLocations";
+import getFriendsLocations from "../firebase/getFriendsLocations";
 
 
 // Types for our data structures
@@ -51,8 +51,8 @@ interface Cluster {
 }
 
 interface FriendLocation {
-    id : string;
-    position : number[];
+  id: string;
+  position: number[];
 }
 
 
@@ -87,8 +87,13 @@ const CenterMap = ({ center }: CenterMapProps) => {
   return null;
 };
 
-const Home = () => {
-  const [userId, setUserID] = useState<string>("106122007");
+// interface userDetailsInterface {
+//   userName: string,
+//   userId: string,
+// }
+
+
+const Home = ({ userDetails }: any) => {
   const [position, setPosition] = useState<Position>([0, 0]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -108,14 +113,15 @@ const Home = () => {
   const { isLoading, places } = useSelector((state: RootState) => state.nearPlaces)
 
   useEffect(() => {
+     if(!userDetails?.userId) return ;
     dispatch(SetupFriendsLoc({
-      userID: userId
+      userID: userDetails?.userId 
     })).then(data => {
       setFriendsIDs(data.payload.friendsID);
-      // console.log("setFriendsLoc : ", data.payload.friendsID);
+      console.log("setFriendsLoc : ", data.payload.friendsID);
     }).catch(err => { console.error("error on dis SetupFriendsLoc : ", error); })
 
-  }, [userId]);
+  }, [userDetails.userId]);
 
   useEffect(() => {
     const fetchFriendsLocations = async () => {
@@ -146,7 +152,8 @@ const Home = () => {
           center: userPos, radiusInMeters: radius
         }
         dispatch(fetchNearbyPlaces(payload))
-        connectFireBase(userId, pos.coords.latitude, pos.coords.longitude);
+        if(!userDetails?.userId) return ;
+        connectFireBase(userDetails.userId, pos.coords.latitude, pos.coords.longitude);
         setLoading(false);
         // console.log("pos : ", position);
       },
@@ -164,9 +171,12 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+
+   if(!userDetails?.userId) return ;
+
     const payload: any = {
 
-      userID: userId,
+      userID: userDetails.userId,
       lat: position[0],
       lng: position[1],
 
@@ -189,7 +199,7 @@ const Home = () => {
   useEffect(() => {
     if (places.length !== 0)
       setNearbyPlaces(places);
-    console.log("near places : " ,  places);
+    console.log("near places : ", places);
   }, [places])
 
   if (loading || isLoading) {
@@ -266,7 +276,7 @@ const Home = () => {
           ))}
         </MarkerClusterGroup>
 
-       <MarkerClusterGroup
+        <MarkerClusterGroup
           chunkedLoading
           iconCreateFunction={createClusterCustomIcon}
         >
