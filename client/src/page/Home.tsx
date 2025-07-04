@@ -23,7 +23,7 @@ import type { RootState } from "@reduxjs/toolkit/query";
 import { useData } from "../Context/DataContext";
 import axios from "axios";
 import { SetupGeoTrigger } from "../store/GeoTrigger";
-import { SetupFriendsLoc } from "../store/FriendsLoc";
+import { GetFriendsId } from "../store/Friends";
 import connectFireBase from "../firebase/connectFireBase";
 import getFriendsLocations from "../firebase/getFriendsLocations";
 
@@ -114,12 +114,12 @@ const Home = ({ userDetails }: any) => {
 
   useEffect(() => {
      if(!userDetails?.userId) return ;
-    dispatch(SetupFriendsLoc({
+    dispatch(GetFriendsId({
       userID: userDetails?.userId 
     })).then(data => {
       setFriendsIDs(data.payload.friendsID);
       console.log("setFriendsLoc : ", data.payload.friendsID);
-    }).catch(err => { console.error("error on dis SetupFriendsLoc : ", error); })
+    }).catch(err => { console.error("error on dis GetFriendsId : ", error); })
 
   }, [userDetails.userId]);
 

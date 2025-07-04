@@ -4,19 +4,13 @@ import (
 	"context"
 	"log"
 	"time"
-		// "net/http"
-	// "strings"
-
 	"github.com/ajaysurya07/LocLore/server/router/nearby"
 	"github.com/ajaysurya07/LocLore/server/router/search"
 	"github.com/ajaysurya07/LocLore/server/router/reminder"
-		"github.com/ajaysurya07/LocLore/server/router/geoTrigger"
-		"github.com/ajaysurya07/LocLore/server/router/friendsLoc"
-			"github.com/ajaysurya07/LocLore/server/router/auth"
+	"github.com/ajaysurya07/LocLore/server/router/geoTrigger"
+	"github.com/ajaysurya07/LocLore/server/router/friend"
+	"github.com/ajaysurya07/LocLore/server/router/auth"
 	"github.com/ajaysurya07/LocLore/server/config"
-
-	// "github.com/ajaysurya07/LocLore/server/middleware"
-	
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -66,7 +60,7 @@ r.Use(cors.New(cors.Config{
 		search.SetupSearchRoutes(apiGroup.Group("/searchOnMap"))
 		reminder.SubmitReminderFormRoutes(apiGroup.Group("/reminderForm"), db)
 		geoTrigger.SetupGeoTrigger(apiGroup.Group("/getGeoTrigger") , db)
-		friendsLoc.SetupFriendsLoc(apiGroup.Group("/getFriends") , db)
+		friend.SetupFriends(apiGroup.Group("/friend") , db)
 		auth.SetAuthRoutes(apiGroup.Group("/auth") , db)
 		        		
 	}

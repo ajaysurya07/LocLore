@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 // import type { RootState } from '@reduxjs/toolkit/query'
 import { useEffect, useState } from 'react'
 import Auth from './page/Auth'
+import AddFriends from './components/AddFriends'
 
 
 interface userDetailsInterface {
@@ -58,6 +59,9 @@ function App() {
           <Home
             userDetails={userDetails}
           />
+          <AddFriends 
+          userId = {userDetails.userId}
+          /> 
           <Reminder_form />
         </Auth>} />
       </Routes>
