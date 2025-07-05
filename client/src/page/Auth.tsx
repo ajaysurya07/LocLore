@@ -9,16 +9,30 @@ const Auth = ({ updateUserDetails, isAuth, children }: any) => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const location = useLocation();
+     if(location.pathname === ""){
+          if(isAuth){
+               return navigate("/home");
+          }else{
+               return navigate("/auth");
+          }
+     }
 
 
-    // if(!isAuth){
-    //      return navigate("/");
-    // }
-    
-
+   
     useEffect(() => {
-        if (!isAuth) {
-            dispatch(CheckAuth())
+
+
+    // if(!isAuth && location.pathname !== "auth"){
+    //     navigate("/auth");
+    //      return ;
+    // }
+
+    // if(isAuth && location.pathname === "auth"){
+    //     navigate("/home");
+    //     return ;
+    // }
+    if(isAuth)return;
+                dispatch(CheckAuth())
                 .then((data) => {
                     // console.log("CheckAuth data:", data.payload);
                     if (data.payload?.user?.isAuth) {
@@ -30,14 +44,12 @@ const Auth = ({ updateUserDetails, isAuth, children }: any) => {
                         navigate('/home');
                     } else {
                         console.warn("User didn't auth!!!");
-                        navigate('/');
+                        navigate('/auth');
                     }
                 })
                 .catch((err) => console.error("CheckAuth error:", err));
-        } else {
-            navigate('/home');
-        }
-    }, [isAuth, dispatch, navigate, updateUserDetails]);
+       
+    }, [isAuth]);
 
     return <>{children}</>;
 }

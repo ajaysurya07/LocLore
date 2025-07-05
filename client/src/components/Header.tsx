@@ -20,7 +20,7 @@ const dispatch = useDispatch<AppDispatch>();
         .then((data) => {
           // console.log("searchOnMap data : ", data.payload.results)
           // return data.payload.results;
-          setGlobalSearchResults(()=> data.payload.results);
+          setGlobalSearchResults(data.payload.results);
         }
         )
 
@@ -49,7 +49,7 @@ const dispatch = useDispatch<AppDispatch>();
   };
 
   return (
-   <main>
+   <main className="top-[0px]">
      <form onSubmit={handleGlobalSearch} className="search-form">
         <input
           type="text"

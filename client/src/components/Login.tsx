@@ -127,4 +127,3 @@ export const Login = ({ onPageChange }: LoginProps) => {
   );
 };
 
-// export default Login;

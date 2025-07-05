@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
-
 import { SetSiguUp, type SignUpForm } from '../store/Auth';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../store/store';
@@ -12,7 +9,6 @@ interface SignupProps {
 }
 
 export const SignUp = ({ onPageChange }: SignupProps) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const [form, setForm] = useState<SignUpForm>({
@@ -36,6 +32,7 @@ export const SignUp = ({ onPageChange }: SignupProps) => {
       dispatch(SetSiguUp(form))
         .then((data) => {
           console.log("data on sigup : ", data);
+          onPageChange();
         })
         .catch(error => {
           console.error("Signup error:", error);
@@ -134,5 +131,3 @@ export const SignUp = ({ onPageChange }: SignupProps) => {
     </div>
   );
 };
-
-// export default SignUp;

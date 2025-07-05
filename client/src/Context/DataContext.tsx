@@ -1,4 +1,25 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import iconUrl from "../icons/placeholder.png";
+import frriendsIcon from "../icons/friendsLoc.png"
+
+import { Icon , divIcon , point   } from "leaflet";
+
+
+
+const customIcon = new Icon({
+  iconUrl,
+  iconSize: [38, 38],
+});
+
+const customFriendIcon = new Icon({
+ frriendsIcon ,  
+  iconSize: [38, 38],
+});
+
+
+interface Cluster {
+    getChildCount: () => number;
+}
 
 interface User {
     userId: string;
@@ -29,7 +50,10 @@ interface DataContextType {
     setGlobalSearchResults: (results: SearchResult[]) => void;
     selectedPlace: SearchResult | null;
     setSelectedPlace: (place: SearchResult | null) => void;
-}
+    customFriendIcon :  any ;
+    customIcon : any ;
+    createClusterCustomIcon : any
+ }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
@@ -37,6 +61,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [user, setUser] = useState<User | null>(null);
     const [globalSearchResults, setGlobalSearchResults] = useState<SearchResult[]>([]);
     const [selectedPlace, setSelectedPlace] = useState<SearchResult | null>(null);
+
+const createClusterCustomIcon = function (cluster: Cluster) {
+    return new divIcon({
+        html: `<span class="cluster-icon">${cluster.getChildCount()}</span>`,
+        className: "custom-marker-cluster",
+        iconSize: point(33, 33, true),
+    });
+};
+
 
     return (
         <DataContext.Provider 
@@ -46,7 +79,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 globalSearchResults, 
                 setGlobalSearchResults, 
                 selectedPlace, 
-                setSelectedPlace 
+                setSelectedPlace ,
+                customFriendIcon ,
+                customIcon ,  
+                createClusterCustomIcon,
             }}
         >
             {children}

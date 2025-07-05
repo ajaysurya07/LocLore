@@ -1,13 +1,9 @@
 import { Route, Routes } from 'react-router-dom'
-import Header from './components/Header'
-import Reminder_form from './components/Reminder_form'
 import AuthPage from './page/AuthPage'
 import Home from './page/Home'
 import { useSelector } from 'react-redux'
-// import type { RootState } from '@reduxjs/toolkit/query'
 import { useEffect, useState } from 'react'
 import Auth from './page/Auth'
-import AddFriends from './components/AddFriends'
 
 
 interface userDetailsInterface {
@@ -19,7 +15,7 @@ interface userDetailsInterface {
 function App() {
 
   const [userDetails, setUserDetails] = useState<userDetailsInterface>({
-    userName: "",
+    userName: "1",
     userId: "",
     isAuth: false
   });
@@ -51,18 +47,20 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path='/' element={<AuthPage />} />
+        <Route path ='/'  element = {
+          <Auth
+          updateUserDetails={updateUserDetails}
+          isAuth={userDetails.isAuth} />}
+            />
+        <Route path='/auth' element={
+          <AuthPage />
+        } />
         <Route path='/home' element={<Auth
           updateUserDetails={updateUserDetails}
           isAuth={userDetails.isAuth}>
-          <Header />
           <Home
             userDetails={userDetails}
           />
-          <AddFriends 
-          userId = {userDetails.userId}
-          /> 
-          <Reminder_form />
         </Auth>} />
       </Routes>
 
